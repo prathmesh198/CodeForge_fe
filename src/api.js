@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://codeforge-backend-v0ij.onrender.com/";
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_URL}${path}`, options);
