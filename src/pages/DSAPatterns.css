@@ -1,0 +1,626 @@
+.roadmap-page {
+    min-height: calc(100vh - 70px);
+    background: #0b121a;
+    color: #eef4fb;
+    padding: 45px 50px 100px;
+    overflow-x: auto;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.roadmap-header {
+    max-width: 1500px;
+    margin: 0 auto 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 30px;
+}
+
+.roadmap-label {
+    color: #8291a3;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.roadmap-header h1 {
+    margin: 0;
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.roadmap-header h1 span {
+    color: #7046ff;
+}
+
+.roadmap-header p {
+    margin: 14px 0 0;
+    color: #8291a3;
+    font-size: 15px;
+}
+
+.roadmap-stats {
+    display: flex;
+    gap: 12px;
+}
+
+.roadmap-stats div {
+    min-width: 110px;
+    padding: 14px 18px;
+
+    border: 1px solid #202d3a;
+    border-radius: 10px;
+
+    background: #111b25;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.roadmap-stats strong {
+    font-size: 25px;
+}
+
+.roadmap-stats small {
+    color: #748496;
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.roadmap-toolbar {
+    max-width: 1500px;
+    margin: 0 auto 35px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.search-box {
+    width: 480px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 0 14px;
+
+    border: 1px solid #263543;
+    border-radius: 8px;
+
+    background: #111a23;
+
+    transition: .25s ease;
+}
+
+.search-box:focus-within {
+    border-color: #7046ff;
+    box-shadow: 0 0 0 3px rgba(112, 70, 255, .12);
+}
+
+.search-box span {
+    color: #6e7d8e;
+    font-size: 21px;
+}
+
+.search-box input {
+    flex: 1;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+    color: white;
+
+    font-size: 13px;
+}
+
+.search-box input::placeholder {
+    color: #667687;
+}
+
+.search-box button {
+    border: none;
+    background: transparent;
+    color: #718093;
+
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.toolbar-info {
+    color: #637487;
+    font-size: 12px;
+}
+
+
+/* =========================
+   MIND MAP
+========================= */
+
+.mindmap {
+    position: relative;
+
+    max-width: 1500px;
+    min-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 50px 0 100px;
+}
+
+
+/* =========================
+   ROOT NODE
+========================= */
+
+.root-node {
+    position: relative;
+
+    width: 210px;
+
+    margin-left: 20px;
+    margin-bottom: 60px;
+
+    padding: 20px 24px;
+
+    border-radius: 5px;
+
+    background: #293746;
+
+    border-left: 4px solid #7046ff;
+
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, .3);
+
+    z-index: 10;
+}
+
+.root-glow {
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    left: -30px;
+    top: -30px;
+
+    background: #7046ff;
+
+    filter: blur(60px);
+
+    opacity: .12;
+
+    pointer-events: none;
+}
+
+.root-title {
+    position: relative;
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.root-subtitle {
+    position: relative;
+
+    margin-top: 5px;
+
+    color: #aeb9c6;
+
+    font-size: 12px;
+}
+
+
+/* =========================
+   CATEGORY AREA
+========================= */
+
+.categories {
+    position: relative;
+
+    margin-left: 100px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 28px;
+}
+
+
+/*
+    Main vertical line from
+    DSA Patterns to categories
+*/
+
+.categories::before {
+    content: "";
+
+    position: absolute;
+
+    left: -65px;
+    top: -60px;
+    bottom: 0;
+
+    width: 2px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #7046ff,
+            #d000d8,
+            #0084d6,
+            #009f91,
+            #f00055,
+            #008d82
+        );
+
+    opacity: .65;
+}
+
+
+/* =========================
+   CATEGORY
+========================= */
+
+.category-section {
+    position: relative;
+
+    display: flex;
+    align-items: flex-start;
+
+    min-height: 70px;
+}
+
+
+/*
+    curved-looking connector
+*/
+
+.category-section::before {
+    content: "";
+
+    position: absolute;
+
+    left: -65px;
+    top: 29px;
+
+    width: 65px;
+    height: 2px;
+
+    background: var(--category-color);
+
+    opacity: .9;
+}
+
+
+/* =========================
+   CATEGORY NODE
+========================= */
+
+.category-head {
+    position: relative;
+
+    min-width: 240px;
+}
+
+.category-node {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    min-height: 38px;
+
+    padding: 7px 12px;
+
+    color: #f1f5f9;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+}
+
+.category-node:hover {
+    transform: translateX(6px);
+
+    background: rgba(255, 255, 255, .035);
+
+    border-radius: 6px;
+}
+
+.category-dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: var(--category-color);
+
+    box-shadow:
+        0 0 12px var(--category-color);
+}
+
+.category-title {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.category-count {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 24px;
+    height: 19px;
+
+    padding: 0 6px;
+
+    border-radius: 10px;
+
+    background: var(--category-color);
+
+    color: white;
+
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.category-toggle {
+    color: #68798b;
+    font-size: 17px;
+}
+
+
+/* =========================
+   PATTERNS
+========================= */
+
+.patterns-container {
+    position: relative;
+
+    margin-left: 35px;
+
+    padding-left: 35px;
+
+    border-left: 2px solid
+        color-mix(
+            in srgb,
+            var(--category-color) 60%,
+            transparent
+        );
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 17px;
+
+    animation: openBranch .25s ease;
+}
+
+@keyframes openBranch {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* =========================
+   PATTERN BRANCH
+========================= */
+
+.pattern-branch {
+    position: relative;
+}
+
+.pattern-row {
+    position: relative;
+}
+
+.pattern-node {
+    position: relative;
+
+    min-width: 200px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 5px 10px;
+
+    border-radius: 5px;
+
+    color: #d9e1e9;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.pattern-node:hover {
+    transform: translateX(5px);
+
+    background: rgba(255, 255, 255, .04);
+}
+
+.node-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--branch-color);
+
+    box-shadow:
+        0 0 9px var(--branch-color);
+}
+
+.expand-icon {
+    margin-left: auto;
+
+    color: #69798a;
+
+    font-size: 15px;
+}
+
+
+/* =========================
+   CHILDREN
+========================= */
+
+.children-container {
+    margin-left: 30px;
+
+    padding-left: 28px;
+
+    border-left: 1px solid
+        color-mix(
+            in srgb,
+            var(--branch-color) 50%,
+            transparent
+        );
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 5px;
+
+    animation: childOpen .2s ease;
+}
+
+@keyframes childOpen {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.child-node {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 25px;
+
+    color: #8998a7;
+
+    font-size: 12px;
+
+    transition:
+        color .2s ease,
+        transform .2s ease;
+}
+
+.child-node:hover {
+    color: white;
+
+    transform: translateX(5px);
+}
+
+.child-line {
+    position: absolute;
+
+    left: -28px;
+
+    width: 25px;
+    height: 1px;
+
+    background: var(--branch-color);
+
+    opacity: .7;
+}
+
+.child-node::before {
+    content: "";
+
+    width: 5px;
+    height: 5px;
+
+    margin-right: 8px;
+
+    border-radius: 50%;
+
+    background: var(--branch-color);
+
+    opacity: .7;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+    .roadmap-page {
+        padding: 30px 20px 80px;
+    }
+
+    .roadmap-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .roadmap-header h1 {
+        font-size: 38px;
+    }
+
+    .roadmap-stats {
+        width: 100%;
+    }
+
+    .roadmap-stats div {
+        flex: 1;
+    }
+
+    .roadmap-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .mindmap {
+        min-width: 950px;
+    }
+
+    .categories {
+        margin-left: 70px;
+    }
+}
