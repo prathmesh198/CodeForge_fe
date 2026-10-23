@@ -1,51 +1,127 @@
-const API_URL = "https://codeforge-backend-v0ij.onrender.com/";
+const API_BASE_URL = "https://codeforge-backend-v0ij.onrender.com";
 
-async function request(path, options = {}) {
-  const response = await fetch(`${API_URL}${path}`, options);
-  const data = await response.json().catch(() => ({}));
+export async function getProblems() {
+    const response = await fetch(`${API_BASE_URL}/problem`);
 
-  if (!response.ok) {
-    throw new Error(data.detail || data.message || "Request failed");
-  }
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to load problems");
+    }
 
-  return data;
+    return response.json();
 }
 
-export const getProblems = () => request("/problem");
+export async function getProblem(id) {
+    const response = await fetch(
+        `${API_BASE_URL}/problem/${id}`
+    );
 
-export const getProblem = (id) => request(`/problem/${id}`);
+    if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to load problem");
+    }
 
-export const loginUser = (email, password) =>
-  request("/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+    return response.json();
+}
 
-export const registerUser = (username, email, password) =>
-  request("/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, email, password })
-  });
+export async function registerUser(username, email, password) {
+    const response = await fetch(
+        `${API_BASE_URL}/register`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username,
+                email,
+                password
+            })
+        }
+    );
 
-export const getProfile = () => {
-  const token = localStorage.getItem("token");
-  return request("/profile", {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-};
+    const data = await response.json();
 
-export const executeCode = (payload) => {
-  const token = localStorage.getItem("token");
-  return request("/execute", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify(payload)
-  });
-};
+    if (!response.ok) {
+        throw new Error(data.detail || "Registration failed");
+    }
 
-export { API_URL };
+    return data;
+}
+
+export async function loginUser(email, password) {
+    const response = await fetch(
+        `${API_BASE_URL}/login`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.detail || "Login failed");
+    }
+
+    return data;
+}
+
+export async function executeCode(payload) {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `${API_BASE_URL}/execute`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token
+                    ? {
+                        Authorization: `Bearer ${token}`
+                    }
+                    : {})
+            },
+            body: JSON.stringify(payload)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.detail || "Code execution failed"
+        );
+    }
+
+    return data;
+}
+
+export async function getProfile() {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+        `${API_BASE_URL}/profile`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.detail || "Failed to load profile"
+        );
+    }
+
+    return data;
+}
