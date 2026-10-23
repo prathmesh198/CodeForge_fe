@@ -1,11 +1,40 @@
+const API_BASE_URL = "https://codeforge-backend-v0ij.onrender.com";
 
-const API_BASE_URL =
-    "https://codeforge-backend-v0ij.onrender.com";
+// =====================================================
+// HELPER
+// =====================================================
+
+async function handleResponse(response) {
+    const text = await response.text();
+
+    console.log("API STATUS:", response.status);
+    console.log("API RESPONSE:", text);
+
+    let data;
+
+    try {
+        data = text ? JSON.parse(text) : {};
+    } catch {
+        data = {
+            detail: text || "Invalid server response"
+        };
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.detail ||
+            data.message ||
+            `Request failed with status ${response.status}`
+        );
+    }
+
+    return data;
+}
 
 
-// ===============================
+// =====================================================
 // REGISTER
-// ===============================
+// =====================================================
 
 export async function registerUser(
     username,
@@ -17,54 +46,24 @@ export async function registerUser(
         {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
             body: JSON.stringify({
-                username,
-                email,
+                username: username.trim(),
+                email: email.trim(),
                 password
             })
         }
     );
 
-    const text = await response.text();
-
-    console.log(
-        "REGISTER STATUS:",
-        response.status
-    );
-
-    console.log(
-        "REGISTER RESPONSE:",
-        text
-    );
-
-    let data;
-
-    try {
-        data = JSON.parse(text);
-    } catch {
-        data = {
-            detail:
-                text ||
-                "Invalid server response"
-        };
-    }
-
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            "Registration failed"
-        );
-    }
-
-    return data;
+    return await handleResponse(response);
 }
 
 
-// ===============================
+// =====================================================
 // LOGIN
-// ===============================
+// =====================================================
 
 export async function loginUser(
     email,
@@ -75,43 +74,31 @@ export async function loginUser(
         {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             },
             body: JSON.stringify({
-                email,
+                email: email.trim(),
                 password
             })
         }
     );
 
-    const text = await response.text();
+    const data = await handleResponse(response);
 
-    console.log(
-        "LOGIN STATUS:",
-        response.status
-    );
-
-    console.log(
-        "LOGIN RESPONSE:",
-        text
-    );
-
-    let data;
-
-    try {
-        data = JSON.parse(text);
-    } catch {
-        data = {
-            detail:
-                text ||
-                "Invalid server response"
-        };
+    // Save token after successful login
+    if (data.access_token) {
+        localStorage.setItem(
+            "token",
+            data.access_token
+        );
     }
 
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            "Login failed"
+    // Save user information
+    if (data.user) {
+        localStorage.setItem(
+            "user",
+            JSON.stringify(data.user)
         );
     }
 
@@ -119,91 +106,94 @@ export async function loginUser(
 }
 
 
-// ===============================
+// =====================================================
+// LOGOUT
+// =====================================================
+
+export function logoutUser() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+}
+
+
+// =====================================================
+// GET TOKEN
+// =====================================================
+
+function getToken() {
+    return localStorage.getItem("token");
+}
+
+
+// =====================================================
 // GET ALL PROBLEMS
-// ===============================
+// =====================================================
 
 export async function getProblems() {
     const response = await fetch(
-        `${API_BASE_URL}/problem`
+        `${API_BASE_URL}/problem`,
+        {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        }
     );
 
-    const text = await response.text();
-
-    console.log(
-        "PROBLEMS STATUS:",
-        response.status
-    );
-
-    let data;
-
-    try {
-        data = JSON.parse(text);
-    } catch {
-        data = {
-            detail:
-                text ||
-                "Invalid server response"
-        };
-    }
-
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            "Failed to load problems"
-        );
-    }
-
-    return data;
+    return await handleResponse(response);
 }
 
 
-// ===============================
+// =====================================================
 // GET SINGLE PROBLEM
-// ===============================
+// =====================================================
 
 export async function getProblem(id) {
     const response = await fetch(
-        `${API_BASE_URL}/problem/${id}`
+        `${API_BASE_URL}/problem/${id}`,
+        {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        }
     );
 
-    const text = await response.text();
-
-    console.log(
-        "PROBLEM STATUS:",
-        response.status
-    );
-
-    let data;
-
-    try {
-        data = JSON.parse(text);
-    } catch {
-        data = {
-            detail:
-                text ||
-                "Invalid server response"
-        };
-    }
-
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            "Failed to load problem"
-        );
-    }
-
-    return data;
+    return await handleResponse(response);
 }
 
 
-// ===============================
+// =====================================================
+// SEARCH PROBLEMS
+// =====================================================
+
+export async function searchProblems(title) {
+    const response = await fetch(
+        `${API_BASE_URL}/problem/search?title=${encodeURIComponent(title)}`,
+        {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        }
+    );
+
+    return await handleResponse(response);
+}
+
+
+// =====================================================
 // EXECUTE CODE
-// ===============================
+// =====================================================
 
 export async function executeCode(payload) {
-    const token =
-        localStorage.getItem("token");
+    const token = getToken();
+
+    if (!token) {
+        throw new Error(
+            "Please login before running or submitting code."
+        );
+    }
 
     const response = await fetch(
         `${API_BASE_URL}/execute`,
@@ -211,67 +201,29 @@ export async function executeCode(payload) {
             method: "POST",
 
             headers: {
-                "Content-Type":
-                    "application/json",
-
-                ...(token
-                    ? {
-                        Authorization:
-                            `Bearer ${token}`
-                    }
-                    : {})
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
             },
 
             body: JSON.stringify(payload)
         }
     );
 
-    const text = await response.text();
-
-    console.log(
-        "EXECUTE STATUS:",
-        response.status
-    );
-
-    console.log(
-        "EXECUTE RESPONSE:",
-        text
-    );
-
-    let data;
-
-    try {
-        data = JSON.parse(text);
-    } catch {
-        data = {
-            detail:
-                text ||
-                "Invalid server response"
-        };
-    }
-
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            "Code execution failed"
-        );
-    }
-
-    return data;
+    return await handleResponse(response);
 }
 
 
-// ===============================
+// =====================================================
 // GET PROFILE
-// ===============================
+// =====================================================
 
 export async function getProfile() {
-    const token =
-        localStorage.getItem("token");
+    const token = getToken();
 
     if (!token) {
         throw new Error(
-            "Please login first"
+            "Please login first."
         );
     }
 
@@ -281,44 +233,56 @@ export async function getProfile() {
             method: "GET",
 
             headers: {
-                Authorization:
-                    `Bearer ${token}`
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
             }
         }
     );
 
-    const text = await response.text();
-
-    console.log(
-        "PROFILE STATUS:",
-        response.status
-    );
-
-    let data;
-
-    try {
-        data = JSON.parse(text);
-    } catch {
-        data = {
-            detail:
-                text ||
-                "Invalid server response"
-        };
-    }
-
-    if (!response.ok) {
-        throw new Error(
-            data.detail ||
-            "Failed to load profile"
-        );
-    }
-
-    return data;
+    return await handleResponse(response);
 }
 
 
-// ===============================
+// =====================================================
+// GET CURRENT USER
+// =====================================================
+
+export async function getCurrentUser() {
+    const token = getToken();
+
+    if (!token) {
+        throw new Error(
+            "Please login first."
+        );
+    }
+
+    const response = await fetch(
+        `${API_BASE_URL}/me`,
+        {
+            method: "GET",
+
+            headers: {
+                "Accept": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        }
+    );
+
+    return await handleResponse(response);
+}
+
+
+// =====================================================
+// CHECK LOGIN
+// =====================================================
+
+export function isLoggedIn() {
+    return !!getToken();
+}
+
+
+// =====================================================
 // API BASE URL
-// ===============================
+// =====================================================
 
 export { API_BASE_URL };
