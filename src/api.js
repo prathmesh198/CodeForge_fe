@@ -322,4 +322,3 @@ export async function getProfile() {
 // ===============================
 
 export { API_BASE_URL };
-```
